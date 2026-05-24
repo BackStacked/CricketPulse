@@ -67,3 +67,29 @@ async def match_history(limit: int = Query(default=20, ge=1, le=100)):
 async def inject_event(event: BallEvent):
     await process_event(event.model_dump(), manager)
     return {"status": "ok", "event": event.model_dump()}
+
+
+_DEMO_WICKET = {
+    "match_id": "demo",
+    "inning": 1,
+    "batting_team": "Mumbai Indians",
+    "bowling_team": "Kolkata Knight Riders",
+    "over": 14,
+    "ball": 3,
+    "batter": "Rohit Sharma",
+    "bowler": "Jasprit Bumrah",
+    "non_striker": "Ishan Kishan",
+    "batsman_runs": 0,
+    "extra_runs": 0,
+    "total_runs": 0,
+    "is_wicket": True,
+    "player_dismissed": "Rohit Sharma",
+    "dismissal_kind": "caught",
+    "is_powerplay": False,
+}
+
+
+@router.post("/demo/wicket")
+async def demo_wicket():
+    await process_event(_DEMO_WICKET, manager)
+    return {"status": "ok", "event": _DEMO_WICKET}
