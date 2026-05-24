@@ -1,9 +1,15 @@
+import logging
+
 from fastapi import APIRouter
+from redis.asyncio import RedisError
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+
 from Backend.core.redis import get_redis
 from Backend.database import async_session_factory
 from Backend.schemas.response import HealthResponse
-from sqlalchemy import text
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -16,15 +22,15 @@ async def health():
         r = await get_redis()
         await r.ping()
         redis_ok = True
-    except Exception:
-        pass
+    except RedisError as exc:
+        logger.warning("Redis health check failed: %s", exc)
 
     try:
         async with async_session_factory() as session:
             await session.execute(text("SELECT 1"))
         db_ok = True
-    except Exception:
-        pass
+    except SQLAlchemyError as exc:
+        logger.warning("DB health check failed: %s", exc)
 
     from Backend.agents.win_probability import _model
     model_loaded = _model is not None
