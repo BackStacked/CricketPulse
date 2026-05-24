@@ -10,7 +10,7 @@ interface UseWebSocketReturn {
   connectionStatus: ConnectionStatus
 }
 
-const WS_URL = 'ws://localhost:8000/ws'
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? 'ws://localhost:8000/ws'
 const BASE_RETRY_DELAY = 3000
 const MAX_RETRY_DELAY = 30000
 
