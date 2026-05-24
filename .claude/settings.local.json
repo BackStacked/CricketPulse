@@ -14,7 +14,8 @@
       "Bash(python -c ' *)",
       "Bash(python -c \"from Backend.core.event_processor import process_event; print\\('event_processor imports OK'\\)\")",
       "Bash(python -c \"from Backend.main import app; print\\('main.py imports OK, app:', app.title\\)\")",
-      "Bash(python -c \"from Backend.emitter.emitter import parse_match, emit; print\\('emitter imports OK'\\)\")"
+      "Bash(python -c \"from Backend.emitter.emitter import parse_match, emit; print\\('emitter imports OK'\\)\")",
+      "Bash(git push *)"
     ]
   }
 }
