@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+redis[asyncio]
+asyncpg
+sqlmodel
+httpx
+pydantic
+pydantic-settings
+python-dotenv
+groq
+xgboost
+scikit-learn
+pandas
+numpy
+joblib
