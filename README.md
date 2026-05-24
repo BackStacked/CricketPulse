@@ -59,8 +59,8 @@ emitter.py ──publish──▶ Redis: match:events
                             │
               ┌─────────────┼─────────────┐
               │             │             │
-       WS broadcast    Frontend     create_task(Postgres)
-       (all clients)   index.html   (fire-and-forget)
+       WS broadcast      Next.js UI   create_task(Postgres)
+       (all clients)     React app    (fire-and-forget)
 ```
 
 **Critical design decisions:**
@@ -101,15 +101,38 @@ CricketPulse/
 │   │   └── models.py            # BallEventLog, LLMResponseLog (SQLModel)
 │   └── emitter/
 │       └── emitter.py           # Cricsheet parser + Redis publisher
-├── Frontend/
-│   └── index.html               # Live dashboard — vanilla JS, no build step
+│
+├── Frontend/cricketpulse-frontend/
+│   ├── app/                     # Next.js 16 App Router (React Server Components)
+│   │   ├── layout.tsx           # Root layout with metadata
+│   │   ├── page.tsx             # Home page
+│   │   ├── globals.css          # Global styles
+│   │   └── docs/                # Documentation pages
+│   ├── components/              # React components
+│   │   ├── animations/          # Framer Motion animations (six, wicket, boundary, milestone)
+│   │   ├── dashboard/           # Dashboard widgets (ScoreBoard, CommentaryFeed, WinProbBar, etc.)
+│   │   ├── docs/                # Documentation components (API reference, architecture, etc.)
+│   │   └── ui/                  # Reusable UI components (Badge, CodeBlock, StatCard, etc.)
+│   ├── hooks/                   # Custom React hooks (useWebSocket, useMatchState, useAnimationTrigger)
+│   ├── lib/                     # Utilities (API examples, constants, utils)
+│   ├── public/                  # Static assets
+│   ├── types/                   # TypeScript type definitions (cricket.ts)
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── next.config.ts
+│   ├── postcss.config.mjs
+│   ├── tailwind.config.js
+│   ├── eslint.config.mjs
+│   └── next-env.d.ts
+│
 ├── models/
-│   ├── win_prob.pkl             # Trained XGBoost classifier
-│   ├── team_encoder.pkl         # LabelEncoder for team names
-│   └── features.pkl             # Feature list (training artifact)
-├── docker-compose.yml           # Redis + Postgres
+│   ├── win_prob.pkl
+│   ├── team_encoder.pkl
+│   └── features.pkl
+│
+├── docker-compose.yml
 ├── requirements.txt
-└── PRD.md                       # Full product requirements document
+└── PRD.md
 ```
 
 ---
@@ -171,7 +194,14 @@ python -m Backend.emitter.emitter --file 1529309.json --speed demo
 
 ### 6. Open the dashboard
 
-Open `Frontend/index.html` directly in your browser. The dot turns green and ball events start flowing.
+```bash
+# Terminal 3
+cd Frontend/cricketpulse-frontend
+npm install
+npm run dev
+```
+
+The Next.js dashboard will start on `http://localhost:3000`
 
 ---
 
@@ -286,13 +316,18 @@ python -m Backend.emitter.emitter --file 1529309.json --speed demo --demo-wicket
 
 ## Frontend dashboard
 
-Zero dependencies. Open `Frontend/index.html` in any browser.
+**Next.js 16 + React 19 full-stack TypeScript application**
 
-- **Win probability bar** — animated two-sided bar, purple (batting) vs teal (bowling), transitions smoothly on every ball
+Built with modern React patterns, Server Components, and TypeScript for type safety.
+
+Key UI features:
+- **Win probability bar** — animated two-sided bar, purple (batting) vs teal (bowling), transitions smoothly on every ball (Framer Motion)
 - **Commentary feed** — last 10 deliveries, newest on top, fade-in animation
 - **Alert banner** — flashes red for wickets/milestones, auto-dismisses after 4 seconds
 - **Ball log chips** — last 20 balls: gray dot, blue 1-3, green 4, amber 6, red W
 - **Connection indicator** — pulsing green when live, auto-reconnects on disconnect
+- **Responsive design** — Tailwind CSS v4 for mobile-first, accessible UI
+- **Smooth animations** — Framer Motion for card and boundary animations
 
 ---
 
@@ -305,7 +340,11 @@ Zero dependencies. Open `Frontend/index.html` in any browser.
 | Message bus | Redis pub/sub |
 | Database | PostgreSQL 15 via asyncpg + SQLModel |
 | ORM / validation | SQLModel + Pydantic v2 |
-| ML model | XGBoost |
+| ML model | Next.js 16 + React 19 + TypeScript |
+| Styling | Tailwind CSS v4 + PostCSS |
+| Animations | Framer Motion |
+| Icons | Lucide React |
+| Linting | ESLint
 | LLM | Groq Cloud — `llama-3.1-8b-instant` |
 | Config | pydantic-settings |
 | Serialization | joblib (model), json (Redis) |
