@@ -17,7 +17,18 @@
       "Bash(python -c \"from Backend.emitter.emitter import parse_match, emit; print\\('emitter imports OK'\\)\")",
       "Bash(git push *)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(node -e \"const lr = require\\('lucide-react'\\); console.log\\(Object.keys\\(lr\\).filter\\(k => k.toLowerCase\\(\\).includes\\('github'\\)\\)\\)\")",
+      "Bash(node -e \"console.log\\(require\\('lucide-react/package.json'\\).version\\)\")",
+      "Bash(node -e \"const lr = require\\('lucide-react'\\); const keys = Object.keys\\(lr\\); console.log\\('Total exports:', keys.length\\); console.log\\('Sample:', keys.slice\\(0,20\\).join\\(', '\\)\\)\")",
+      "Bash(node -e \"const lr = require\\('lucide-react'\\); ['Globe', 'Code2', 'GitBranch', 'Link', 'Link2', 'ArrowUpRight'].forEach\\(n => console.log\\(n, ':', n in lr\\)\\)\")",
+      "Bash(npm run *)",
+      "Bash(Start-Sleep -Seconds 5)",
+      "Bash(Get-Content \"C:\\\\Users\\\\DEVRAJ~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Dev-Raj-Chandra-Desktop-CricketPulse\\\\540baadd-ce1c-4e8b-b320-8c0d08c491c2\\\\tasks\\\\bpnwzre6w.output\" -Tail 20)",
+      "PowerShell(Start-Process -FilePath \"npm\" -ArgumentList \"run dev\" -WorkingDirectory \"C:\\\\Users\\\\Dev Raj Chandra\\\\Desktop\\\\CricketPulse\\\\Frontend\\\\cricketpulse-frontend\" -WindowStyle Hidden; Start-Sleep -Seconds 6; try { $r = Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing -TimeoutSec 5; \"HTTP $\\($r.StatusCode\\)\" } catch { \"Error: $_\" })",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000/docs\" -UseBasicParsing -TimeoutSec 8; \"HTTP $\\($r.StatusCode\\) — content length: $\\($r.Content.Length\\) bytes\" } catch { \"Error: $_\" })",
+      "Bash(npx next *)"
     ]
   }
 }
