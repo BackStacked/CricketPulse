@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from datetime import datetime
 
 from Backend.agents.win_probability import build_match_state, predict_win_probability
@@ -6,6 +7,8 @@ from Backend.agents.commentary import generate_commentary
 from Backend.agents.alerts import check_and_alert
 from Backend.schemas.event import BallEvent
 from Backend.schemas.payload import WinProbResult, WebSocketPayload
+
+logger = logging.getLogger(__name__)
 
 _cumulative = {
     "match_id": None,
@@ -25,15 +28,18 @@ async def process_event(event: dict, ws_manager):
 
     prev_inning = _cumulative["inning"]
 
-    # Innings transition: first ball of inning 2 detected
-    if event["inning"] == 2 and _cumulative["innings1_total"] == 0 and prev_inning == 1:
+    # Innings transition: detected by the inning number changing from 1 → 2.
+    # Previous check also required innings1_total == 0 which meant a first-innings
+    # total of 0 would retrigger the transition on every ball of inning 2.
+    if event["inning"] == 2 and prev_inning == 1:
         innings1_total = _cumulative["runs_so_far"]
         _cumulative["innings1_total"] = innings1_total
         _cumulative["runs_so_far"] = event["total_runs"]
         _cumulative["wickets_so_far"] = 1 if event["is_wicket"] else 0
         _cumulative["ball_number"] = 1
         _cumulative["target"] = innings1_total + 1
-        _cumulative["batter_runs"] = {event["batter"]: event["batsman_runs"]}
+        batter = event.get("batter") or "unknown"
+        _cumulative["batter_runs"] = {batter: event["batsman_runs"]}
     else:
         # Normal cumulative update
         _cumulative["match_id"] = event["match_id"]
@@ -42,7 +48,7 @@ async def process_event(event: dict, ws_manager):
         if event["is_wicket"]:
             _cumulative["wickets_so_far"] += 1
         _cumulative["ball_number"] += 1
-        batter = event["batter"]
+        batter = event.get("batter") or "unknown"
         _cumulative["batter_runs"][batter] = (
             _cumulative["batter_runs"].get(batter, 0) + event["batsman_runs"]
         )
@@ -73,7 +79,7 @@ async def process_event(event: dict, ws_manager):
 
     print(
         f"[{event['inning']}.{event['over']}.{event['ball']}] "
-        f"{event['batter']} | {event['total_runs']} runs | "
+        f"{event.get('batter', 'unknown')} | {event['total_runs']} runs | "
         f"WinProb: {win_prob_result['batting_team']} {win_prob_result['batting_prob']}% | "
         f"Wicket: {event['is_wicket']}"
     )
@@ -91,7 +97,7 @@ async def log_to_db(event: dict, win_prob: dict, commentary: str, alert: str | N
             ball=event["ball"],
             batting_team=event["batting_team"],
             bowling_team=event["bowling_team"],
-            batter=event["batter"],
+            batter=event.get("batter", "unknown"),
             bowler=event["bowler"],
             total_runs=event["total_runs"],
             is_wicket=event["is_wicket"],
@@ -104,8 +110,11 @@ async def log_to_db(event: dict, win_prob: dict, commentary: str, alert: str | N
         async with async_session_factory() as session:
             session.add(record)
             await session.commit()
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.warning(
+            "DB log failed for %s/%s/%s: %s",
+            event.get("match_id"), event.get("over"), event.get("ball"), exc,
+        )
 
 
 def get_cumulative() -> dict:
