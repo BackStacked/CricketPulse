@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 
@@ -14,6 +14,10 @@ const geistMono = Geist_Mono({
   display: 'swap',
 })
 
+export const viewport: Viewport = {
+  themeColor: '#0A0A0A',
+}
+
 export const metadata: Metadata = {
   title: {
     default: 'CricketPulse — Real-time IPL AI',
@@ -21,7 +25,6 @@ export const metadata: Metadata = {
   },
   description:
     'Real-time multi-agent IPL intelligence platform. XGBoost win probability, LLM commentary, and autonomous alerts on every ball.',
-  themeColor: '#0A0A0A',
 }
 
 export default function RootLayout({
