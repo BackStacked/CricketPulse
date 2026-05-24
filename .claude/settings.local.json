@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"from Backend.config import settings; print\\(settings.REDIS_URL\\)\")",
+      "Bash(pip install *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(python -c \"from Backend.schemas.event import BallEvent; print\\('schemas OK'\\)\")",
+      "Bash(docker compose *)",
+      "Bash(docker-compose up *)",
+      "PowerShell(docker compose up -d 2>&1)",
+      "PowerShell(netstat -an)",
+      "PowerShell(head -3)",
+      "Bash(python -c ' *)",
+      "Bash(python -c \"from Backend.core.event_processor import process_event; print\\('event_processor imports OK'\\)\")",
+      "Bash(python -c \"from Backend.main import app; print\\('main.py imports OK, app:', app.title\\)\")",
+      "Bash(python -c \"from Backend.emitter.emitter import parse_match, emit; print\\('emitter imports OK'\\)\")"
+    ]
+  }
+}
