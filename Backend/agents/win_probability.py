@@ -66,12 +66,12 @@ def predict_win_probability(match_state: dict) -> dict:
 
     try:
         batting_enc = _encoder.transform([batting_team])[0]
-    except (ValueError, Exception):
+    except ValueError:
         batting_enc = 0
 
     try:
         bowling_enc = _encoder.transform([bowling_team])[0]
-    except (ValueError, Exception):
+    except ValueError:
         bowling_enc = 0
 
     features = [
