@@ -13,7 +13,7 @@
 [![Redis](https://img.shields.io/badge/Redis-pub%2Fsub-dc382d?style=flat-square&logo=redis&logoColor=white)](https://redis.io)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 
-Built at **GDG Raipur — Agentic Premier League Hackathon**, May 24 2026
+🏆 **1st place** at **GDG Raipur — Agentic Premier League Hackathon**, May 24 2026
 
 </div>
 
